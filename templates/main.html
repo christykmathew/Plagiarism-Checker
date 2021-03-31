@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <header>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    </header>
+    <head>
+        <title>Copy Checker</title>
+    </head>
+    <body style="background-color: #1D2026;">
+        <h1>Copy Checker</h1>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+        h1 {
+                color: beige;
+                font-family: Arial, Helvetica, sans-serif;
+                text-align:center;
+        }
+        h1:hover {
+                color: #0270D7;
+        }
+        textarea::placeholder {
+                text-align:center;
+                color: beige;
+                }
+        textarea:hover::placeholder { 
+                background-color: #4f4f4f !important;
+                color: greenyellow;
+                }
+        input[type='button']:hover{
+                color: greenyellow !important;
+                background-color: #4f4f4f !important;
+        }
+        select[id='selection']:hover{
+                background-color: grey;
+                color:greenyellow !important;
+        }
+
+    </style>
+    <script>
+        $(document).ready(function(){
+        $('.wrapper').on('click', '.get_result', function(){
+                var val1 = $("#input_text1").val();
+                var val2 = $("#input_text2").val();
+                var val3 = $("#selection").val();
+                $(".result").html('<p>Loading....</p>');
+                $.ajax({
+                url: "/send",
+                type: "get",
+                data: {val1: val1, val2: val2, val3: val3},
+                success: function(response) {
+                    $(".result").html('<p>'+response.result.toString()+'</p>');
+                },
+                });
+            });
+        });
+    </script>
+    <script>
+        function textarea() {
+            var elem = document.getElementById("selection");
+            var getvalue = elem.value;
+            if (getvalue == 'Online'){
+                var myobj = document.getElementsByName("input_text2")[0];
+                myobj.remove();
+            }
+
+            if (getvalue == 'Offline'){
+                var div = document.getElementById("form");
+                var input = document.createElement("textarea");
+                input.name = "input_text2";
+                input.id = "input_text2";
+                input.placeholder = "Enter Second text";
+                input.cols = "60";
+                input.rows = "25";
+                input.style = "background-color: #333333; color: honeydew;"
+                div.appendChild(input);
+            }
+
+        }
+    </script>    
+    <form action="/send" method="POST">
+        <div id = "form" align = "center">
+        <textarea
+            rows="25"
+            cols="60"
+            placeholder="Enter Text here"
+            name="input_text1"
+            name="input_text1"
+            id="input_text1"
+            style="background-color: #333333; color: honeydew;"
+        ></textarea>
+        <textarea
+            rows="25"
+            cols="60"
+            placeholder="Enter Second text"
+            name="input_text2"
+            id="input_text2"
+            style="background-color: #333333; color: honeydew;"
+
+        ></textarea>
+        </div>
+        <br>
+        <div class="wrapper" align = "center">
+            <label for="Operation" style="color: beige;">Type: </label>
+            <select id='selection' class="dropdown-select" name="type" onchange="textarea()" style="background-color: #333333; color: beige; text-align: center; height: 25px;">
+                <option value="Offline" >Offline   </option>
+                <option value="Online">Online     </option>
+            </select>
+            <br><br>
+            <input type="button" class="get_result" value="Submit" id="calc_btn" style="background-color: #3a3a3a; color: beige; border: none; padding: 5px 25px; font-size: 14px;"/>
+        </div>
+    </form>
+    <br />
+    <div class="ouput" align = 'center'>
+        <b style="color: beige">Output: </b><br>
+            <div class="result" style="color: beige; margin-left:100px; margin-right:100px">
+            </div>
+    </div>
+    </body>
+</html>
